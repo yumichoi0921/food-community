@@ -61,6 +61,26 @@ router.post("/uploadVideo", (req, res) => {
 });
 
 
+router.get("/getVideos", (req, res) => {
+
+    // 비디오를 DB에서 가져와서 클라이언트에 보낸다.
+
+    // 모든 비디오를 가져온다.
+    Video.find()
+        // writer의 모든 정보 가져오기
+        .populate('writer')
+        .exec((err, videos) => {
+            if(err) return res.status(400).send(err);
+            res.status(200).json({ success: true, videos })
+        })
+
+
+
+  
+
+});
+
+
 
 router.post("/thumbnail", (req, res) => {
 
@@ -105,5 +125,7 @@ router.post("/thumbnail", (req, res) => {
         });
 
 });
+
+
 
 module.exports = router;
