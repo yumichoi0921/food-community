@@ -56,7 +56,7 @@ function UploadPage(props) {
         console.log(files)
         formData.append("file", files[0])
 
-        Axios.post('/api/video/uploadfiles', formData, config)
+        Axios.post('/api/post/uploadfiles', formData, config)
             .then(response => {
                 if (response.data.success) {
                     console.log(response.data)
@@ -69,7 +69,7 @@ function UploadPage(props) {
 
                     //gerenate thumbnail with this filepath ! 
 
-                    Axios.post('/api/video/thumbnail', variable)
+                    Axios.post('/api/post/thumbnail', variable)
                         .then(response => {
                             if (response.data.success) {
                                 console.log(response.data)
@@ -102,16 +102,16 @@ function UploadPage(props) {
             thumbnail: ThumbnailPath
         }
 
-        Axios.post('/api/video/uploadVideo', variables)
+        Axios.post('/api/post/uploadVideo', variables)
             .then(response => {
                 if(response.data.success) {
                     console.log(response.data)
                     message.success('성공적으로 업로드를 했습니다.')
 
                     setTimeout(() => {
-                        props.history.push('/')
+
                     }, 3000);
-                
+                    props.history.push('/')
                 } else {
                     alert('Failed to upload the video')
                 }

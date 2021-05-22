@@ -10,14 +10,14 @@ const { Meta } = Card;
 
 function LandingPage() {
 
-    const [Video, setVideo] = useState([])
+    const [Videos, setVideos] = useState([])
 
     useEffect(() => {
-        Axios.get('/api/video/getVideos')
+        Axios.get('/api/post/getVideos')
             .then(response => {
                 if(response.data.success) {
                     console.log(response.data)
-                    setVideo(response.data.videos)
+                    setVideos(response.data.videos)
 
                 } else {
                     alert('게시물 가져오기를 실패했습니다.')
@@ -25,14 +25,14 @@ function LandingPage() {
             } )
     }, [])
 
-    const renderCards = Video.map((video, index) => {
+    const renderCards = Videos.map((video, index) => {
        
         var minutes = Math.floor(video.duration / 60);
         var seconds = Math.floor(video.duration - minutes * 60);
 
         return <Col lg={6} md={8} xs={24}>
             <div style={{ position: 'relative' }}>
-                <a href={`/video/${video._id}`} >
+                <a href={`/post/${video._id}`} >
                 <img style={{ width: '100%' }} src={`http://localhost:5000/${video.thumbnail}`} alt="thumbnail"/>
                 <div className=" duration"
                     style={{ bottom: 0, right:0, position: 'absolute', margin: '4px', 

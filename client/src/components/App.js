@@ -28,8 +28,8 @@ function App() {
           <Route exact path="/" component={Auth(LandingPage, null)} />
           <Route exact path="/login" component={Auth(LoginPage, false)} />
           <Route exact path="/register" component={Auth(RegisterPage, false)} />
-          <Route exact path="/upload" component={Auth(UploadPage, true)} />
-          <Route exact path="/upload" component={Auth(UploadPage, true)} />
+          <Route exact path="/post/upload" component={Auth(UploadPage, true)} />
+          <Route exact path="/post/:videoID" component={Auth(PostDetailPage, true)} />
         </Switch>
       </div>
       <Footer />
