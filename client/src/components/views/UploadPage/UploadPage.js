@@ -3,7 +3,9 @@ import Dropzone from 'react-dropzone';
 import {Typography, Button, Form, message, Input, Icon} from 'antd';
 import Item from 'antd/lib/list/Item';
 import Axios from 'axios';
-// import { use } from '../../../../../server/routes/video';
+import { useSelector } from 'react-redux';
+// import { response } from 'express';
+
 
 const { TextArea } = Input;
 const { Title } = Typography;
@@ -19,8 +21,8 @@ const CategoryOptions = [
     {value: 2, label: "all"}
 ]
 
-function UploadPage() {
-
+function UploadPage(props) {
+    const user = useSelector(state => state.user);
     const [PostTitle, setPostTitle] = useState("")
     const [Description, setDescription] = useState("")
     const [Private, setPrivate] = useState(0)
@@ -79,10 +81,41 @@ function UploadPage() {
                         })
                         
                 } else {
-                    alert('failed to save the video in server')
+                    alert('Failed to save the video in server')
                 }
             })
 
+    }
+
+    const onSubmit = (e) => {
+        // 이벤트 발생을 막음(이벤트 고유 동작을 중단시킴)
+        e.preventDefault();
+
+        const variables = {
+            writer: user.userData._id,
+            title: PostTitle,
+            description: Description,
+            privacy: Private,
+            filePath: FilePath,
+            category: Category,
+            duration: Duration,
+            thumbnail: ThumbnailPath
+        }
+
+        Axios.post('/api/video/uploadVideo', variables)
+            .then(response => {
+                if(response.data.success) {
+                    console.log(response.data)
+                    message.success('성공적으로 업로드를 했습니다.')
+
+                    setTimeout(() => {
+                        props.history.push('/')
+                    }, 3000);
+                
+                } else {
+                    alert('Failed to upload the video')
+                }
+            })
     }
 
     return (
@@ -91,7 +124,7 @@ function UploadPage() {
                 <Title level={2}>Upload</Title>
             </div>
 
-            <Form onSubmit>
+            <Form onSubmit={onSubmit}>
                 <div style = {{ display: 'flex', justifyContent: 'space-between'}}>
                     {/*  drop zone */}
                     <Dropzone
@@ -152,7 +185,7 @@ function UploadPage() {
                 <br />
                 <br />
 
-                <Button type = "Primary" size="large" onClick>
+                <Button type = "Primary" size="large" onClick={onSubmit}>
                     Submit
                 </Button>
 
