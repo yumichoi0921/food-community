@@ -12,3 +12,6 @@ yarn-debug.kog*
 yarn-error.log*
 
 .vscode
+
+# 업로드 폴더
+/uploads
