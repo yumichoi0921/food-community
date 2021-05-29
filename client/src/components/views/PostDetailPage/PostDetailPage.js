@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { Row, Col, List, Avatar } from 'antd';
+import { Row, Col, List, Avatar, Typography, Divider } from 'antd';
 import Axios from 'axios';
 import SideVideo from './Sections/SideVideo';
-// import { response } from 'express';
-// import { Video } from '../../../../../server/models/Video';
+import Subscribe from './Sections/Subscribe';
 
+const { Title, Paragraph } = Typography;
 
 function PostDetailPage(props) {
 
@@ -31,35 +31,31 @@ function PostDetailPage(props) {
     if(VideoDetail.writer) {
         return (
             <Row gutter = {[16, 16]}>
-                <Col lg={18} xs={18}>
+                <Col lg={16} xs={24}>
                     <div style={{ width: '100%', padding:'3rem 4em'}}>
+                        {/* video title */}
+                        <Title style = {{ textAlign: 'center'}}>{VideoDetail.title}</Title>
                         {/* video */}
                         <video style={{width: '100%'}} src={`http://localhost:5000/${VideoDetail.filePath}`} controls/>
                         {/* user avatar */}
                         <List.Item 
-                            actions
+                            actions={[<Subscribe userTo={VideoDetail.writer._id} userFrom={localStorage.getItem('userId')} />]}
                         >
                             <List.Item.Meta
-                                avatar={<Avatar src={VideoDetail.writer.image}/>}
-                                title={VideoDetail.writer.name}
-                                // description={VideoDetail.description}
+                                 avatar={<Avatar src={VideoDetail.writer.image} />}
+                                 title={VideoDetail.writer.name}
                             />
                         </List.Item>
-                        <List.Item 
-                            actions
-                        >
-                            <List.Item.Meta
-                                description={VideoDetail.description}
-                            />
-                        </List.Item>
-                        
+                        {/* description */}
+                        <Divider />
+                        <Paragraph>{VideoDetail.description}</Paragraph>
                         {/* comment */}
                         
     
                     </div>
                 </Col>
                 
-                <Col lg={6} xs={24}>
+                <Col lg={8} xs={24}>
                     <SideVideo />
                 </Col>
             </Row>
