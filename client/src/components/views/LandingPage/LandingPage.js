@@ -16,7 +16,7 @@ function LandingPage() {
         Axios.get('/api/post/getVideos')
             .then(response => {
                 if(response.data.success) {
-                    console.log(response.data)
+                    console.log(response.data.videos)
                     setVideos(response.data.videos)
 
                 } else {
@@ -32,6 +32,7 @@ function LandingPage() {
 
         return <Col lg={6} md={8} xs={24}>
             <div style={{ position: 'relative' }}>
+                
                 <a href={`/post/${video._id}`} >
                 <img style={{ width: '100%' }} src={`http://localhost:5000/${video.thumbnail}`} alt="thumbnail"/>
                 <div className=" duration"
@@ -42,6 +43,7 @@ function LandingPage() {
                     <span>{minutes} : {seconds}</span>
                 </div>
                 </a>
+                
             </div><br />
             <Meta
                 avatar={
