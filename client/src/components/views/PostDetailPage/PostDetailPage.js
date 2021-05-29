@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Row, Col, List, Avatar } from 'antd';
 import Axios from 'axios';
+import SideVideo from './Sections/SideVideo';
 // import { response } from 'express';
 // import { Video } from '../../../../../server/models/Video';
 
@@ -33,7 +34,7 @@ function PostDetailPage(props) {
                 <Col lg={18} xs={18}>
                     <div style={{ width: '100%', padding:'3rem 4em'}}>
                         {/* video */}
-                        <video style={{width: '50%'}} src={`http://localhost:5000/${VideoDetail.filePath}`} controls/>
+                        <video style={{width: '100%'}} src={`http://localhost:5000/${VideoDetail.filePath}`} controls/>
                         {/* user avatar */}
                         <List.Item 
                             actions
@@ -56,10 +57,10 @@ function PostDetailPage(props) {
                         
     
                     </div>
-    
                 </Col>
+                
                 <Col lg={6} xs={24}>
-                    Side videio
+                    <SideVideo />
                 </Col>
             </Row>
         )
