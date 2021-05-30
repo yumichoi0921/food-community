@@ -7,12 +7,17 @@ import moment from 'moment';
 const { Title } = Typography;
 const { Meta } = Card;
 
-function LandingPage() {
-
+function SubscriptionPage() {
     const [Videos, setVideos] = useState([])
 
     useEffect(() => {
-        Axios.get('/api/post/getVideos')
+
+        const subscriptionVariables = {
+            userFrom : localStorage.getItem('userId')
+        }
+
+
+        Axios.post('/api/post/getSubscriptionVideos', subscriptionVariables)
             .then(response => {
                 if(response.data.success) {
                     console.log(response.data.videos)
@@ -67,9 +72,6 @@ function LandingPage() {
             </Row>
         </div>
     )
-   
-   
-
 }
 
-export default LandingPage
+export default SubscriptionPage

@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const { Video  } = require("../models/Video");
-const { auth } = require("../middleware/auth");
 const multer = require("multer");
 var ffmpeg = require('fluent-ffmpeg');
+
+const { Video  } = require("../models/Video");
+const { auth } = require("../middleware/auth");
+const { Subscriber } = require("../models/Subscriber");
 
 
 var storage = multer.diskStorage({
@@ -45,17 +47,6 @@ router.post("/uploadfiles", (req, res) => {
 });
 
 
-router.post("/getVideoDetail", (req, res) => {
-
-    Video.findOne({ "_id" : req.body.videoId })
-    .populate('writer')
-    .exec((err, videoDetail) => {
-        if(err) return res.status(400).send(err);
-        res.status(200).json({ success: true, videoDetail })
-    })
-});
-
-
 router.post("/uploadVideo", (req, res) => {
 
     // 비디오 정보들을 서버에 저장한다.
@@ -69,27 +60,6 @@ router.post("/uploadVideo", (req, res) => {
     })
 
 });
-
-
-router.get("/getVideos", (req, res) => {
-
-    // 비디오를 DB에서 가져와서 클라이언트에 보낸다.
-
-    // 모든 비디오를 가져온다.
-    Video.find()
-        // writer의 모든 정보 가져오기
-        .populate('writer')
-        .exec((err, videos) => {
-            if(err) return res.status(400).send(err);
-            res.status(200).json({ success: true, videos })
-        })
-
-
-
-  
-
-});
-
 
 
 router.post("/thumbnail", (req, res) => {
@@ -135,6 +105,58 @@ router.post("/thumbnail", (req, res) => {
         });
 
 });
+
+
+router.get("/getVideos", (req, res) => {
+
+    // 비디오를 DB에서 가져와서 클라이언트에 보낸다.
+
+    // 모든 비디오를 가져온다.
+    Video.find()
+        // writer의 모든 정보 가져오기
+        .populate('writer')
+        .exec((err, videos) => {
+            if(err) return res.status(400).send(err);
+            res.status(200).json({ success: true, videos })
+        })
+});
+
+
+router.post("/getVideoDetail", (req, res) => {
+
+    Video.findOne({ "_id" : req.body.videoId })
+    .populate('writer')
+    .exec((err, videoDetail) => {
+        if(err) return res.status(400).send(err);
+        res.status(200).json({ success: true, videoDetail })
+    })
+});
+
+
+router.post("/getSubscriptionVideos", (req, res) => {
+
+    // 자기 아이디를 가지고 구독하는 유저를 찾는다
+    Subscriber.find({ 'userFrom': req.body.userFrom })
+        .exec((err, subscribers)=> {
+            if(err) return res.status(400).send(err);
+
+            let subscribedUser = [];
+
+            subscribers.map((subscriber, i)=> {
+                subscribedUser.push(subscriber.userTo)
+            })
+   
+   
+            // 찾은 사람들의 비디오를 가지고 온다.
+            Video.find({ writer: { $in: subscribedUser }})
+                .populate('writer')
+                .exec((err, videos) => {
+                    if(err) return res.status(400).send(err);
+                    res.status(200).json({ success: true, videos })
+                })
+        })
+});
+
 
 
 
