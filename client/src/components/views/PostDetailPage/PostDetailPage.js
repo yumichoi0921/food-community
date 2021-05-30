@@ -3,6 +3,7 @@ import { Row, Col, List, Avatar, Typography, Divider } from 'antd';
 import Axios from 'axios';
 import SideVideo from './Sections/SideVideo';
 import Subscribe from './Sections/Subscribe';
+import Comment from './Sections/Comment';
 
 const { Title, Paragraph } = Typography;
 
@@ -29,6 +30,9 @@ function PostDetailPage(props) {
 
     
     if(VideoDetail.writer) {
+
+        const subscribeButton =  VideoDetail.writer._id !== localStorage.getItem('userId') && <Subscribe userTo={VideoDetail.writer._id} userFrom={localStorage.getItem('userId')} />;
+       
         return (
             <Row gutter = {[16, 16]}>
                 <Col lg={16} xs={24}>
@@ -39,7 +43,7 @@ function PostDetailPage(props) {
                         <video style={{width: '100%'}} src={`http://localhost:5000/${VideoDetail.filePath}`} controls/>
                         {/* user avatar */}
                         <List.Item 
-                            actions={[<Subscribe userTo={VideoDetail.writer._id} userFrom={localStorage.getItem('userId')} />]}
+                            actions={[subscribeButton]}
                         >
                             <List.Item.Meta
                                  avatar={<Avatar src={VideoDetail.writer.image} />}
@@ -50,6 +54,8 @@ function PostDetailPage(props) {
                         <Divider />
                         <Paragraph>{VideoDetail.description}</Paragraph>
                         {/* comment */}
+                        <Divider />
+                        <Comment postId={VideoDetail._id}/>
                         
     
                     </div>
