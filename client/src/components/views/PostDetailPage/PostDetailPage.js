@@ -5,6 +5,7 @@ import SideVideo from './Sections/SideVideo';
 import Subscribe from './Sections/Subscribe';
 import Comment from './Sections/Comment'
 // import LikeDislikes from './Sections/LikeDislikes';
+import ReactHtmlParser from 'react-html-parser';
 
 const { Title, Paragraph } = Typography;
 
@@ -69,7 +70,7 @@ function PostDetailPage(props) {
                         </List.Item>
                         {/* description */}
                         <Divider />
-                        <Paragraph>{VideoDetail.description}</Paragraph>
+                        <Paragraph>{ReactHtmlParser(VideoDetail.description)}</Paragraph>
                         {/* comment */}
                         <Divider />
                         {/* videoId -> VideoDetail._id */}

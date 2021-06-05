@@ -4,7 +4,9 @@ import {Typography, Button, Form, message, Input, Icon} from 'antd';
 import Item from 'antd/lib/list/Item';
 import Axios from 'axios';
 import { useSelector } from 'react-redux';
-// import { response } from 'express';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import './Sections/UploadPage.css';
 
 
 const { TextArea } = Input;
@@ -35,10 +37,11 @@ function UploadPage(props) {
         setPostTitle(e.currentTarget.value)
     }
 
-    const onDescriptionChange = (e) => {
-        setDescription(e.currentTarget.value)
+    const onDescriptionChange = (event, editor) => {
+        const data = editor.getData();
+        setDescription(data)
     }
-
+    
     const onPrivateChange = (e) => {
         setPrivate(e.currentTarget.value)
     }
@@ -162,13 +165,14 @@ function UploadPage(props) {
                 <br />
                 
                 <label>Descrption</label>
-                <TextArea
-                    onChange = {onDescriptionChange}
-                    value = {Description}
+                <CKEditor 
+                    editor={ClassicEditor}
+                    data="<p>Hello from CKEditor 5!</p>"
+                    onChange={onDescriptionChange}
                 />
                 <br />
                 <br />
-
+               
                 <select onChange = {onPrivateChange}>
                     {PrivateOptions.map((item, index) => (
                         <option key={index} value={item.value}>{item.label}</option>
