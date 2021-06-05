@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Button, Input } from 'antd';
 import Axios from 'axios';
 import { useSelector } from 'react-redux';
-// import SingleComment from './SingleComment';
+import SingleComment from './SingleComment';
 // import ReplyComment from './ReplyComment';
 const { TextArea } = Input;
 
@@ -11,9 +11,6 @@ function Comment(props) {
 
     const user = useSelector(state => state.user)
     const [commentValue, setcommentValue] = useState("")
-    // const videoId = props.match.params.videoId
-    const videoId = props.postId;
-
 
     const onSubmit = (e) => {
         e.preventDefault();
@@ -28,8 +25,8 @@ function Comment(props) {
             .then(response => {
                 if (response.data.success) {
                     console.log(response.data.result)
-                  
-                  
+                    setcommentValue("")
+                    props.refreshFunction(response.data.result)
                 } else {
                     alert('댓글을 저장하지 못했습니다.')
                 }
@@ -48,6 +45,11 @@ function Comment(props) {
             <p> replies</p>
             <hr />
             {/* Comment Lists  */}
+            {props.CommentLists && props.CommentLists.map((comment, index) => (
+                (!comment.responseTo && 
+                    <SingleComment refreshFunction={props.refreshFunction} comment={comment} postId={props.postId} />
+                )
+            ))}
 
 
 
