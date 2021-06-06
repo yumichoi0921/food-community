@@ -19,9 +19,6 @@ const videoSchema = mongoose.Schema({
     privacy: {
         type: Number
     },
-    filePath: {
-        type: String
-    },
     category: {
         type: String
     },
@@ -29,11 +26,18 @@ const videoSchema = mongoose.Schema({
         type: Number,
         default: 0
     },
+    filePath: {
+        type: String
+    },
     duration: {
         type: String
     },
     thumbnail: {
         type: String
+    },
+    images: {
+        type: Array,
+        default: []
     }
 }, { timestamps: true }) // 생성된 날짜와 수정된 날짜 저장
 

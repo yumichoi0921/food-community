@@ -1,12 +1,13 @@
 import React, {useState} from 'react';
-import Dropzone from 'react-dropzone';
+// import Dropzone from 'react-dropzone';
 import {Typography, Button, Form, message, Input, Icon} from 'antd';
-import Item from 'antd/lib/list/Item';
+// import Item from 'antd/lib/list/Item';
 import Axios from 'axios';
 import { useSelector } from 'react-redux';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import './Sections/UploadPage.css';
+import FileUpload from '../../utils/FileUpload';
 
 
 const { TextArea } = Input;
@@ -32,6 +33,7 @@ function UploadPage(props) {
     const [FilePath, setFilePath] = useState("")
     const [Duration, setDuration] = useState("")
     const [ThumbnailPath, setThumbnailPath] = useState("")
+    const [Images, setImages] = useState([])
 
     const onTitleChange = (e) => {
         setPostTitle(e.currentTarget.value)
@@ -41,7 +43,7 @@ function UploadPage(props) {
         const data = editor.getData();
         setDescription(data)
     }
-    
+
     const onPrivateChange = (e) => {
         setPrivate(e.currentTarget.value)
     }
@@ -50,51 +52,31 @@ function UploadPage(props) {
         setCategory(e.currentTarget.value)
     }
 
-    const onDrop = (files) => {
-
-        let formData = new FormData();
-        const config = {
-            header: { 'content-type': 'multipart/form-data' }
-        }
-        console.log(files)
-        formData.append("file", files[0])
-
-        Axios.post('/api/post/uploadfiles', formData, config)
-            .then(response => {
-                if (response.data.success) {
-                    console.log(response.data)
-
-                    let variable = {
-                        filePath: response.data.filePath,
-                        fileName: response.data.fileName
-                    }
-                    setFilePath(response.data.filePath)
-
-                    //gerenate thumbnail with this filepath ! 
-
-                    Axios.post('/api/post/thumbnail', variable)
-                        .then(response => {
-                            if (response.data.success) {
-                                console.log(response.data)
-                                setDuration(response.data.fileDuration)
-                                setThumbnailPath(response.data.thumbsFilePath)
-                            } else {
-                                alert('Failed to make the thumbnails');
-                            }
-                        })
-                        
-                } else {
-                    alert('Failed to save the video in server')
-                }
-            })
-
+    const updateImages = (newImages) => {
+        setImages(newImages)
     }
 
-    const onSubmit = (e) => {
+    const updateFilePath = (newFilePath) => {
+        setFilePath(newFilePath)
+    }
+
+    const updatThumbnail = (newDuration, newThumbnailPath) => {
+        setDuration(newDuration)
+        setThumbnailPath(newThumbnailPath)
+    }
+
+
+    const onSubmitHandler = (e) => {
         // 이벤트 발생을 막음(이벤트 고유 동작을 중단시킴)
         e.preventDefault();
 
+        if (!Images || !PostTitle || !Description || !Private || !Category) {
+            return alert("대표 이미지, 제목, 설명, 공개 범위, 카테고리를 입력해주세요.")
+        }
+
+        // 서버에 있는 값을 request로 보냄.
         const variables = {
+            // 로그인된 사람의 아이디
             writer: user.userData._id,
             title: PostTitle,
             description: Description,
@@ -102,12 +84,13 @@ function UploadPage(props) {
             filePath: FilePath,
             category: Category,
             duration: Duration,
-            thumbnail: ThumbnailPath
+            thumbnail: ThumbnailPath,
+            images: Images
         }
 
-        Axios.post('/api/post/uploadVideo', variables)
+        Axios.post('/api/post/uploadfiles', variables)
             .then(response => {
-                if(response.data.success) {
+                if (response.data.success) {
                     console.log(response.data)
                     message.success('성공적으로 업로드를 했습니다.')
 
@@ -116,85 +99,61 @@ function UploadPage(props) {
                     }, 3000);
                     props.history.push('/')
                 } else {
-                    alert('Failed to upload the video')
+                    alert('업로드를 실패했습니다')
                 }
             })
     }
 
     return (
-        <div style = {{ maxWidth: '700px', margin: '2rem auto'}}>
-            <div style = {{ textAlign: 'center', marginBottom: '2rem'}}>
+        <div style={{ maxWidth: '700px', margin: '2rem auto' }}>
+            <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
                 <Title level={2}>Upload</Title>
             </div>
 
-            <Form onSubmit={onSubmit}>
-                <div style = {{ display: 'flex', justifyContent: 'space-between'}}>
-                    {/*  drop zone */}
-                    <Dropzone
-                    onDrop = {onDrop}
-                    multiple = {false}
-                    maxSize = {8000000000}
-                    >
-                    {({ getRootProps, getInputProps }) => (
-                        <div style = {{ width: '300px', height: '240px', border: '1px solid lightgray',
-                    alignItems: 'center', justifyContent: 'center'}} {...getRootProps()}>
-                        <input {...getInputProps()} />
-                        <Icon type = "plus" style = {{ fontSize: '3rem'}} />
-                    </div>
-                    )}
+            <Form onSubmit={onSubmitHandler}>
+                {/* file upload zone */}
+                <FileUpload ImageRefreshFunction={updateImages} FilePathRefreshFunction={updateFilePath} ThumbnailRefreshFunction={updatThumbnail} />
 
-                    </Dropzone>
-                    {/* Thumnail */}
-                    
-                    {ThumbnailPath !== "" &&
-                        <div>
-                            <img src={`http://localhost:5000/${ThumbnailPath}`} alt="haha" />
-                        </div>
-                    }
-
-                </div>
                 <br />
                 <br />
-                
+
                 <label>Title</label>
-                <Input 
-                    onChange = {onTitleChange}
-                    value = {PostTitle}
+                <Input
+                    onChange={onTitleChange}
+                    value={PostTitle}
                 />
                 <br />
                 <br />
-                
+
                 <label>Descrption</label>
-                <CKEditor 
+                <CKEditor
                     editor={ClassicEditor}
                     data="<p>Hello from CKEditor 5!</p>"
                     onChange={onDescriptionChange}
                 />
                 <br />
                 <br />
-               
-                <select onChange = {onPrivateChange}>
+
+                <select onChange={onPrivateChange}>
                     {PrivateOptions.map((item, index) => (
                         <option key={index} value={item.value}>{item.label}</option>
                     ))}
                 </select>
                 <br />
                 <br />
-                
-                <select onChange = {onCategoryChange}>
-                     {CategoryOptions.map((item, index) => (
+
+                <select onChange={onCategoryChange}>
+                    {CategoryOptions.map((item, index) => (
                         <option key={index} value={item.value}>{item.label}</option>
-                     ))}
+                    ))}
                 </select>
                 <br />
                 <br />
 
-                <Button type = "Primary" size="large" onClick={onSubmit}>
+                <Button type="Primary" size="large" onClick={onSubmitHandler}>
                     Submit
                 </Button>
-
             </Form>
-
         </div>
     )
 }

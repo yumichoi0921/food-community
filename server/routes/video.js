@@ -27,14 +27,38 @@ var storage = multer.diskStorage({
     }
 })
 
+var imageStorage = multer.diskStorage({
+    // 파일을 저장할 장소->uploads 폴더에 저장
+    destination: (req, file, cb) => {
+        cb(null, "uploads/")
+    },
+    // 파일 저장시 어떤 이름으로 저장할 것인지->현재날짜_파일이름
+    filename: (req, file, cb) => {
+        cb(null, `${Date.now()}_${file.originalname}`)
+    },
+})
+
 const upload = multer({ storage: storage }).single("file");
+const imageUpload = multer({ storage: imageStorage }).single("file");
 
 
 //=================================
 //             Video
 //=================================
 
-router.post("/uploadfiles", (req, res) => {
+router.post("/image", (req, res) => {
+
+    // 이미지를 서버에 저장한다.   
+    imageUpload(req, res, err => {
+        if (err) {
+            return res.json({ success: false, err })
+        }
+        return res.json({ success: true, filePath: res.req.file.path, fileName: res.req.file.filename })
+    })
+
+});
+
+router.post("/video", (req, res) => {
 
     // 비디오를 서버에 저장한다.   
     upload(req, res, err => {
@@ -47,15 +71,15 @@ router.post("/uploadfiles", (req, res) => {
 });
 
 
-router.post("/uploadVideo", (req, res) => {
+router.post("/uploadfiles", (req, res) => {
 
-    // 비디오 정보들을 서버에 저장한다.
+    // 포스트 정보를 db에 저장한다.
 
     // 모든 variables를 다 가져온다.
     const video  = new Video(req.body)
     // 몽고DB에 저장
     video.save((err, doc) => {
-        if(err) return res.jso({ success: false, err })
+        if(err) return res.json({ success: false, err })
         res.status(200).json({ success: true })
     })
 
