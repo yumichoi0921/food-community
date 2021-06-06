@@ -146,13 +146,14 @@ router.get("/getPosts", (req, res) => {
 });
 
 
-router.post("/getVideoDetail", (req, res) => {
+router.post("/getPostDetail", (req, res) => {
 
-    Video.findOne({ "_id" : req.body.videoId })
+    // postId를 이용해서 DB에서 postId와 같은 상품의 정보 가져온다.
+    Video.findOne({ "_id" : req.body.postId })
     .populate('writer')
-    .exec((err, videoDetail) => {
+    .exec((err, postDetail) => {
         if(err) return res.status(400).send(err);
-        res.status(200).json({ success: true, videoDetail })
+        res.status(200).json({ success: true, postDetail })
     })
 });
 

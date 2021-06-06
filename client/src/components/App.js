@@ -30,7 +30,7 @@ function App() {
           <Route exact path="/login" component={Auth(LoginPage, false)} />
           <Route exact path="/register" component={Auth(RegisterPage, false)} />
           <Route exact path="/post/upload" component={Auth(UploadPage, true)} />
-          <Route exact path="/post/:videoId" component={Auth(PostDetailPage, null)} />
+          <Route exact path="/post/:postId" component={Auth(PostDetailPage, null)} />
           <Route exact path="/subscription" component={Auth(SubscriptionPage, null)} />
         </Switch>
       </div>
