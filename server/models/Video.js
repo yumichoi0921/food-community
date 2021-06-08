@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 
 const videoSchema = mongoose.Schema({
-   
+
     writer: {
         // Id로 User 모델의 모든 정보 사용
         type: Schema.Types.ObjectId,
@@ -20,7 +20,8 @@ const videoSchema = mongoose.Schema({
         type: Number
     },
     category: {
-        type: String
+        type: Number,
+        default: 1
     },
     views: {
         type: Number,
@@ -44,6 +45,6 @@ const videoSchema = mongoose.Schema({
 
 
 
-const Video  = mongoose.model('Video', videoSchema);
+const Video = mongoose.model('Video', videoSchema);
 
-module.exports = { Video  }
+module.exports = { Video }

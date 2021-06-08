@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 // import Dropzone from 'react-dropzone';
-import {Typography, Button, Form, message, Input, Icon} from 'antd';
+import { Typography, Button, Form, message, Input, Icon } from 'antd';
 // import Item from 'antd/lib/list/Item';
 import Axios from 'axios';
 import { useSelector } from 'react-redux';
@@ -14,14 +14,14 @@ const { TextArea } = Input;
 const { Title } = Typography;
 
 const PrivateOptions = [
-    {value: 0, label: "Private"},
-    {value: 1, label: "Public"}
+    { value: 0, label: "Private" },
+    { value: 1, label: "Public" }
 ]
 
 const CategoryOptions = [
-    {value: 0, label: "food"},
-    {value: 1, label: "desert"},
-    {value: 2, label: "all"}
+    { key: 1, label: "food" },
+    { key: 2, label: "desert" },
+    { key: 3, label: "all" }
 ]
 
 function UploadPage(props) {
@@ -29,7 +29,7 @@ function UploadPage(props) {
     const [PostTitle, setPostTitle] = useState("")
     const [Description, setDescription] = useState("")
     const [Private, setPrivate] = useState(0)
-    const [Category, setCategory] = useState("food")
+    const [Category, setCategory] = useState(1)
     const [FilePath, setFilePath] = useState("")
     const [Duration, setDuration] = useState("")
     const [ThumbnailPath, setThumbnailPath] = useState("")
@@ -143,8 +143,8 @@ function UploadPage(props) {
                 <br />
 
                 <select onChange={onCategoryChange}>
-                    {CategoryOptions.map((item, index) => (
-                        <option key={index} value={item.value}>{item.label}</option>
+                    {CategoryOptions.map(item => (
+                        <option key={item.key} value={item.key}>{item.label}</option>
                     ))}
                 </select>
                 <br />

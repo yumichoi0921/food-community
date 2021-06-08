@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { List, Avatar, Row, Col, Typography, Divider} from 'antd';
+import { List, Avatar, Row, Col, Typography, Divider } from 'antd';
 import Axios from 'axios';
 import PostImage from './Sections/PostImage';
 import PostInfo from './Sections/PostInfo';
@@ -51,7 +51,6 @@ function PostDetailPage(props) {
     if (PostDetail.writer) {
 
         const subscribeButton = PostDetail.writer._id !== localStorage.getItem('userId') && <Subscribe userTo={PostDetail.writer._id} userFrom={localStorage.getItem('userId')} />;
-        const videoClip = PostDetail.filePath && <video style={{ width: '100%' }} src={`http://localhost:5000/${PostDetail.filePath}`} controls />
 
         return (
             <div style={{ width: '100%', padding: '3rem 4em' }}>
@@ -61,10 +60,12 @@ function PostDetailPage(props) {
                     <Col lg={16} xs={24}>
                         {/* post image */}
                         <PostImage detail={PostDetail} />
+
                         {/* video */}
                         <div>
                             {PostDetail.filePath && (<video style={{ width: '100%' }} src={`http://localhost:5000/${PostDetail.filePath}`} controls />)}
                         </div>
+
                         {/* user avatar */}
                         <List.Item
                             actions={[subscribeButton]}
@@ -74,12 +75,13 @@ function PostDetailPage(props) {
                                 title={PostDetail.writer.name}
                             />
                         </List.Item>
+
                         {/* description */}
                         <Divider />
                         <Paragraph>{ReactHtmlParser(PostDetail.description)}</Paragraph>
+
                         {/* comment */}
                         <Divider />
-                        {/* videoId -> PostDetail._id */}
                         <Comment refreshFunction={refreshFunction} CommentLists={CommentLists} postId={PostDetail._id} />
                     </Col>
 
