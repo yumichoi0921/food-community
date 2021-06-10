@@ -8,7 +8,7 @@ const { Title } = Typography;
 const { Meta } = Card;
 
 function SubscriptionPage() {
-    const [Videos, setVideos] = useState([])
+    const [Posts, setPosts] = useState([])
 
     useEffect(() => {
 
@@ -17,11 +17,11 @@ function SubscriptionPage() {
         }
 
 
-        Axios.post('/api/post/getSubscriptionVideos', subscriptionVariables)
+        Axios.post('/api/post/getSubscriptionPosts', subscriptionVariables)
             .then(response => {
                 if(response.data.success) {
-                    console.log(response.data.videos)
-                    setVideos(response.data.videos)
+                    console.log(response.data.posts)
+                    setPosts(response.data.posts)
 
                 } else {
                     alert('게시물 가져오기를 실패했습니다.')
@@ -29,16 +29,16 @@ function SubscriptionPage() {
             } )
     }, [])
 
-    const renderCards = Videos.map((video, index) => {
+    const renderCards = Posts.map((post, index) => {
        
-        var minutes = Math.floor(video.duration / 60);
-        var seconds = Math.floor(video.duration - minutes * 60);
+        var minutes = Math.floor(post.duration / 60);
+        var seconds = Math.floor(post.duration - minutes * 60);
 
         return <Col lg={6} md={8} xs={24}>
             <div style={{ position: 'relative' }}>
                 
-                <a href={`/post/${video._id}`} >
-                <img style={{ width: '100%' }} src={`http://localhost:5000/${video.thumbnail}`} alt="thumbnail"/>
+                <a href={`/post/${post._id}`} >
+                <img style={{ width: '100%' }} src={`http://localhost:5000/${post.images[0]}`} alt="thumbnail"/>
                 <div className=" duration"
                     style={{ bottom: 0, right:0, position: 'absolute', margin: '4px', 
                     color: '#fff', backgroundColor: 'rgba(17, 17, 17, 0.8)', opacity: 0.8, 
@@ -51,13 +51,13 @@ function SubscriptionPage() {
             </div><br />
             <Meta
                 avatar={
-                    <Avatar src={video.writer.image} />
+                    <Avatar src={post.writer.image} />
                 }
-                title={video.title}
+                title={post.title}
             />
-            <span>{video.writer.name} </span><br />
-            <span style={{ marginLeft: '3rem' }}> {video.views}</span>
-            <span> {moment(video.createdAt).format("MMM Do YY")} </span>
+            <span>{post.writer.name} </span><br />
+            <span style={{ marginLeft: '3rem' }}> {post.views}</span>
+            <span> {moment(post.createdAt).format("MMM Do YY")} </span>
         </Col>
 
     })

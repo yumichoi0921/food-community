@@ -42,7 +42,15 @@ const videoSchema = mongoose.Schema({
     }
 }, { timestamps: true }) // 생성된 날짜와 수정된 날짜 저장
 
-
+videoSchema.index({
+    title: 'text',
+    description: 'text'
+}, {
+    weights: {
+        title: 5,
+        description: 1
+    }
+})
 
 
 const Video = mongoose.model('Video', videoSchema);

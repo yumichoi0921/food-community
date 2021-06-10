@@ -125,7 +125,19 @@ function LandingPage() {
     }
 
     const updateSearchTerm = (newSearchTerm) => {
+       
         setSearchTerm(newSearchTerm)
+
+        let body = {
+            skip: 0,
+            limit: Limit,
+            filters: Filters,
+            searchTerm: newSearchTerm
+        }
+
+        setSkip(0)
+        setSearchTerm(newSearchTerm)
+        getPosts(body)
     }
 
     return (

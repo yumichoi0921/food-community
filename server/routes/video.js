@@ -135,6 +135,7 @@ router.post("/getPosts", (req, res) => {
 
     let limit = req.body.limit ? parseInt(req.body.limit) : 20;
     let skip = req.body.skip ? parseInt(req.body.skip) : 0;
+    let term = req.body.searchTerm
 
 
     let findArgs = {};
@@ -146,23 +147,40 @@ router.post("/getPosts", (req, res) => {
         }
     }
 
-    console.log('findArgs', findArgs)
-
     // 포스트를 DB에서 가져와서 클라이언트에 보낸다.
 
-    // 모든 포스트를 가져온다.
-    Video.find(findArgs)
-        // writer의 모든 정보 가져오기
-        .populate('writer')
-        .skip(skip)
-        .limit(limit)
-        .exec((err, postInfo) => {
-            if (err) return res.status(400).send(err);
-            res.status(200).json({
-                success: true, postInfo,
-                postSize: postInfo.length
+    if (term) {
+        // term과 일치하는 포스트를 가져온다.
+        Video.find(findArgs)
+            .find({ $text: { $search: term } })
+            // writer의 모든 정보 가져오기
+            .populate('writer')
+            .skip(skip)
+            .limit(limit)
+            .exec((err, postInfo) => {
+                if (err) return res.status(400).send(err);
+                res.status(200).json({
+                    success: true, postInfo,
+                    postSize: postInfo.length
+                })
             })
-        })
+
+    } else {
+        // 모든 포스트를 가져온다.
+        Video.find(findArgs)
+            // writer의 모든 정보 가져오기
+            .populate('writer')
+            .skip(skip)
+            .limit(limit)
+            .exec((err, postInfo) => {
+                if (err) return res.status(400).send(err);
+                res.status(200).json({
+                    success: true, postInfo,
+                    postSize: postInfo.length
+                })
+            })
+    }
+
 });
 
 
@@ -178,7 +196,7 @@ router.post("/getPostDetail", (req, res) => {
 });
 
 
-router.post("/getSubscriptionVideos", (req, res) => {
+router.post("/getSubscriptionPosts", (req, res) => {
 
     // 자기 아이디를 가지고 구독하는 유저를 찾는다
     Subscriber.find({ 'userFrom': req.body.userFrom })
@@ -195,9 +213,9 @@ router.post("/getSubscriptionVideos", (req, res) => {
             // 찾은 사람들의 비디오를 가지고 온다.
             Video.find({ writer: { $in: subscribedUser } })
                 .populate('writer')
-                .exec((err, videos) => {
+                .exec((err, posts) => {
                     if (err) return res.status(400).send(err);
-                    res.status(200).json({ success: true, videos })
+                    res.status(200).json({ success: true, posts })
                 })
         })
 });

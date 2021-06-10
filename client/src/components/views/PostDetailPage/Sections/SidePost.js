@@ -7,7 +7,7 @@ function SidePost() {
     const [SidePosts, setSidePosts] = useState([])
 
     useEffect(() => {
-        Axios.get('/api/post/getPosts')
+        Axios.post('/api/post/getPosts')
             .then(response => {
                 if(response.data.success) {
                     console.log(response.data.postInfo)
