@@ -21,7 +21,7 @@ const PrivateOptions = [
 const CategoryOptions = [
     { key: 1, label: "Main Food" },
     { key: 2, label: "Side Food" },
-    { key: 3, label: "Desert" }
+    { key: 3, label: "Dessert" }
 ]
 
 function UploadPage(props) {

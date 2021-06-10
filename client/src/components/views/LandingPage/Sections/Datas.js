@@ -9,7 +9,7 @@ const category = [
     },
     {
         "_id": 3,
-        "name": "Desert"
+        "name": "Dessert"
     }
 ]
 export {
