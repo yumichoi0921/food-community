@@ -6,7 +6,7 @@ import PostInfo from './Sections/PostInfo';
 import SidePost from './Sections/SidePost';
 import Subscribe from './Sections/Subscribe';
 import Comment from './Sections/Comment'
-// import LikeDislikes from './Sections/LikeDislikes';
+import LikeDislikes from './Sections/LikeDislikes';
 import ReactHtmlParser from 'react-html-parser';
 
 const { Title, Paragraph } = Typography;
@@ -66,9 +66,9 @@ function PostDetailPage(props) {
                             {PostDetail.filePath && (<video style={{ width: '100%' }} src={`http://localhost:5000/${PostDetail.filePath}`} controls />)}
                         </div>
 
-                        {/* user avatar */}
+                        {/* likes or dislikes, subscribe */}
                         <List.Item
-                            actions={[subscribeButton]}
+                            actions={[<LikeDislikes post postId={postId} userId={localStorage.getItem('userId')}  />, subscribeButton]}
                         >
                             <List.Item.Meta
                                 avatar={<Avatar src={PostDetail.writer.image} />}

@@ -3,6 +3,7 @@ import { Comment, Avatar, Button, Input } from 'antd';
 import Axios from 'axios';
 import { useSelector } from 'react-redux';
 import { responsiveMap } from 'antd/lib/_util/responsiveObserve';
+import LikeDislikes from './LikeDislikes';
 // import LikeDislikes from './LikeDislikes';
 const { TextArea } = Input;
 
@@ -45,6 +46,7 @@ function SingleComment(props) {
     }
 
     const actions = [
+        <LikeDislikes comment commentId={props.comment._id} userId={localStorage.getItem('userId')} />,
         <span onClick={onClickReplyOpen} key="comment-basic-reply-to"> Reply to</span>
     ]
    

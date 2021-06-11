@@ -64,7 +64,7 @@ function SubscriptionPage() {
 
     return (
         <div style={{ width: '85%', margin: '3rem auto' }}>
-            <Title level={2} > Recipe </Title>
+            <Title level={2} > Subscription Page </Title>
             <hr />
 
             <Row gutter={16}>
